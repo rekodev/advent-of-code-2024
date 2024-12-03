@@ -1,8 +1,7 @@
 import { readInput } from '../utils';
 
-const parseInput = (input) => {
-  return input.split('\n').map((value) => value.split(' '));
-};
+const parseInput = (input) =>
+  input.split('\n').map((value) => value.split(' '));
 
 const analyzeSafety = (report) => {
   let safe = true;

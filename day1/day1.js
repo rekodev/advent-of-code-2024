@@ -1,5 +1,3 @@
-//  Part 1 | Answer: 1666427
-
 import { readInput } from '../utils.js';
 
 const parseInput = (input) => {
@@ -18,7 +16,10 @@ const parseInput = (input) => {
 };
 
 const exampleInput = await readInput('./example_input.txt');
+const input = await readInput('./input.txt');
+
 const parsedExampleInput = parseInput(exampleInput);
+const parsedInput = parseInput(input);
 
 const distanceCalculator = (firstList, secondList) => {
   if (firstList.length !== secondList.length) return 0;
@@ -43,12 +44,6 @@ const distanceCalculator = (firstList, secondList) => {
   return totalDistance;
 };
 
-console.log(
-  distanceCalculator(parsedExampleInput.list1, parsedExampleInput.list2)
-); // Expected output: 11
-
-// Part 2 | Answer: 24316233
-
 const similarityCalculator = (firstList, secondList) => {
   if (firstList.length !== secondList.length) return 0;
 
@@ -69,6 +64,14 @@ const similarityCalculator = (firstList, secondList) => {
   return similarityScore;
 };
 
+// Part 1
+console.log(
+  distanceCalculator(parsedExampleInput.list1, parsedExampleInput.list2)
+); // Expected output: 11
+console.log(distanceCalculator(parsedInput.list1, parsedInput.list2)); // Example output: 1666427
+
+// Part 2
 console.log(
   similarityCalculator(parsedExampleInput.list1, parsedExampleInput.list2)
 ); // Expected output: 31
+console.log(similarityCalculator(parsedInput.list1, parsedInput.list2)); // Expected output: 24316233
