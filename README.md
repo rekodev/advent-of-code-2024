@@ -16,7 +16,7 @@ git clone https://github.com/rekodev/advent-of-code-2024.git
 ```
 2. Navigate to a day's folder:
 ```
-cd day-01
+cd day1
 ```
 3. Run the solution with Node.js:
 ```
