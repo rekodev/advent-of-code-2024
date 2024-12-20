@@ -3,6 +3,8 @@ import { readInput } from "../utils.js";
 const exampleInput = await readInput("./example_input.txt");
 const input = await readInput("./input.txt");
 
+const INCORRECT_ONLY = true;
+
 const parseInput = (input) => {
   const splitInput = input.split("\n");
   const sectionOne = [];
@@ -45,10 +47,56 @@ const checkOrderCorrectness = (number, numbersSeen, ruleSection) => {
   return true;
 };
 
-const calculateMiddlePageNumbers = (input) => {
+const fixIncorrectUpdate = (update, sectionOne) => {
+  let isUpdateCorrect = false;
+  let seenNumbers = [];
+
+  while (!isUpdateCorrect) {
+    isUpdateCorrect = true;
+
+    for (let i = 0; i < update.length; i++) {
+      const number = parseInt(update[i]);
+
+      seenNumbers.push(number);
+      const isOrderCorrect = checkOrderCorrectness(
+        number,
+        seenNumbers,
+        sectionOne
+      );
+
+      if (!isOrderCorrect) {
+        isUpdateCorrect = false;
+
+        const prevNumber = update[i - 1];
+        update[i - 1] = number.toString();
+        update[i] = prevNumber;
+
+        seenNumbers = [];
+        break;
+      }
+    }
+  }
+
+  return update;
+};
+
+const calculateMiddlePageNumberSum = (updates) => {
+  let middlePageNumberSum = 0;
+
+  for (const update of updates) {
+    const middleIndex = Math.floor(update.length / 2);
+    const middlePageNumber = update[middleIndex];
+    middlePageNumberSum += parseInt(middlePageNumber);
+  }
+
+  return middlePageNumberSum;
+};
+
+const calculateMiddlePageNumbers = (input, incorrectOnly = false) => {
   const { sectionOne, sectionTwo } = parseInput(input);
 
   const correctUpdates = [];
+  const incorrectUpdates = [];
 
   for (const update of sectionTwo) {
     const splitUpdate = update.split(",");
@@ -74,20 +122,29 @@ const calculateMiddlePageNumbers = (input) => {
 
     if (isUpdateCorrect) {
       correctUpdates.push(splitUpdate);
+    } else {
+      incorrectUpdates.push(splitUpdate);
     }
   }
 
-  let middlePageNumberSum = 0;
+  if (incorrectOnly) {
+    const fixedUpdates = [];
 
-  for (const update of correctUpdates) {
-    const middleIndex = Math.floor(update.length / 2);
-    const middlePageNumber = update[middleIndex];
-    middlePageNumberSum += parseInt(middlePageNumber);
+    for (const update of incorrectUpdates) {
+      const fixedUpdate = fixIncorrectUpdate(update, sectionOne);
+      fixedUpdates.push(fixedUpdate);
+    }
+
+    return calculateMiddlePageNumberSum(fixedUpdates);
   }
 
-  return middlePageNumberSum;
+  return calculateMiddlePageNumberSum(correctUpdates);
 };
 
 // Part 1
-console.log(calculateMiddlePageNumbers(exampleInput));
-console.log(calculateMiddlePageNumbers(input));
+console.log(calculateMiddlePageNumbers(exampleInput)); // Expected output: 143
+console.log(calculateMiddlePageNumbers(input)); // Expected output: 4578
+
+// Part 2
+console.log(calculateMiddlePageNumbers(exampleInput, INCORRECT_ONLY)); // Expected output: 123
+console.log(calculateMiddlePageNumbers(input, INCORRECT_ONLY)); // Expecected output: 6179
